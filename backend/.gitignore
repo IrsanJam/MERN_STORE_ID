@@ -1,0 +1,14 @@
+# Ignore file yang dihasilkan oleh editor atau IDE
+.vscode/
+.idea/
+
+# Ignore file yang dihasilkan oleh sistem operasi atau editor
+*.DS_Store
+*.swp
+
+# Ignore file konfigurasi lokal
+.env
+
+# Ignore dependensi dan file yang dihasilkan oleh manajer dependensi
+node_modules/
+npm-debug.log
