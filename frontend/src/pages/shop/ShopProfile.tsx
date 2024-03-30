@@ -108,7 +108,7 @@ const ProfileToko: React.FC = () => {
     <div>
       <Header />
       <div>
-        <div className="px-0 md:px-24 pt-32 md:pt-40">
+        <div className="px-0 md:px-20 pt-32 md:pt-[28vh]">
           <h2 className="font-poppins md:text-3xl text-2xl font-semibold leading-4 mb-4 px-6 md:px-0">Profil Toko Saya</h2>
           <nav className="flex mb-4 font-poppins " aria-label="Breadcrumb">
             <ol className="inline-flex items-center space-x-1 md:space-x-3">

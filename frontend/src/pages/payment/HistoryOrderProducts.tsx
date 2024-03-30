@@ -60,6 +60,7 @@ const HistoryOrderProducts = () => {
                   status={item.status}
                   paymentStatus={item.transaction_status}
                   check={false}
+                  datePayment={item.datePayment}
                 />
               ))
             )}

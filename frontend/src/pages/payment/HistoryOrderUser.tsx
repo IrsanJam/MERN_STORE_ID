@@ -83,6 +83,7 @@ const HistoryOrderUser = () => {
                   hapus={() => ubahStatus(item._id)}
                   paymentStatus={item.transaction_status}
                   check={true}
+                  datePayment={item.datePayment}
                 />
               ))
             )}

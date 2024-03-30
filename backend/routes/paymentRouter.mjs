@@ -62,6 +62,7 @@ router.post("/payment", verifyToken, async (req, res) => {
             orderId: userId,
             transaction_status: "Belum dibayar",
             stockDecremented: false,
+            datePayment: new Date(),
           };
           resultData.push(itemAll);
         }

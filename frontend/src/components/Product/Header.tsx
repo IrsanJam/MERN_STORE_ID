@@ -55,7 +55,7 @@ const Navbar: FC = () => {
   }, []);
 
   return (
-    <div className="flex justify-between  fixed z-10 w-screen items-center px-5 md:px-28 py-2 md:py-0 bg-white shadow-sm h-[10vh] md:h-[20vh]">
+    <div className="flex justify-between  fixed z-10 w-screen items-center px-5 md:px-20 py-2 md:py-0 bg-white shadow-sm h-[10vh] md:h-[20vh]">
       {username !== "admin" ? (
         <h2 onClick={() => navigate("/")} className="cursor-pointer text-2xl md:text-4xl font-bold text-[#0396C7]">
           StoreID

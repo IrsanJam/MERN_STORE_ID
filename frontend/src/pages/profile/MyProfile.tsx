@@ -71,7 +71,7 @@ function UserProfile() {
   return (
     <div>
       <Header />
-      <div className="md:pl-24 px-0 pt-32 md:pt-40">
+      <div className="md:pl-20 px-0 pt-32 md:pt-[28vh]">
         <div>
           <h2 className="font-poppins text-2xl md:text-3xl font-semibold leading-4 mb-4  md:px-0 px-6">Profil Saya</h2>
           <nav className="flex mb-4 font-poppins " aria-label="Breadcrumb">
@@ -387,7 +387,7 @@ function myProfile(): JSX.Element {
               Password
             </label>
             <input
-              type="text"
+              type="password"
               id="password"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="password"

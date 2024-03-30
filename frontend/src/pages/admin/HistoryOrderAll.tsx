@@ -123,6 +123,7 @@ const HistoryOrderAll = () => {
                     hapus={() => ubahStatus(item._id)}
                     paymentStatus={item.transaction_status}
                     check={false}
+                    datePayment={item.datePayment}
                   />
                 ))
               )}

@@ -29,6 +29,9 @@ const transactionSchema = new mongoose.Schema({
   },
   productId: { type: String },
   stockDecremented: { type: Boolean },
+  datePayment: {
+    type: Date,
+  },
 });
 
 const paymentItemSchema = new mongoose.Schema({

@@ -31,6 +31,7 @@ export interface typeHistoryOrder {
   status?: string;
   check: boolean;
   paymentStatus: string;
+  datePayment: Date;
 }
 
 export interface FormDataProduct {

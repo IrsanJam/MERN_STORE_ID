@@ -3,7 +3,7 @@ import { typeHistoryOrder } from "../../utils/products/type";
 import NumberFormatter from "../NumberFormatter";
 
 const CardHistoryOrder: FC<typeHistoryOrder> = (props: typeHistoryOrder) => {
-  const { price, nama_lengkap, description, stock, brand, image, hapus, status, check, paymentStatus, type } = props;
+  const { price, nama_lengkap, description, stock, brand, image, hapus, status, check, paymentStatus, type, datePayment } = props;
 
   return (
     <>
@@ -119,7 +119,7 @@ const CardHistoryOrder: FC<typeHistoryOrder> = (props: typeHistoryOrder) => {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <p>14/01/2024</p>
+                <p>{datePayment.toLocaleDateString()}</p>
               </div>
 
               {check && status !== "Selesai" && (
