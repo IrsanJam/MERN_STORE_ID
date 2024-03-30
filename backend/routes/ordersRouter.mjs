@@ -10,6 +10,7 @@ const router = express.Router();
 router.post("/orders", verifyToken, async (req, res) => {
   const userId = req.user.id;
   try {
+    await boxModel.deleteMany({});
     const findCart = await cartModel.find({ cartId: userId });
     const orderItems = [];
 
@@ -37,7 +38,6 @@ router.post("/orders", verifyToken, async (req, res) => {
     const result = await ordersModel.create({ items: orderItems, orderId: userId });
     await boxModel.create({ items: orderItems, orderId: userId });
     await cartModel.deleteMany({ cartId: userId });
-
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "You Can't order" });
