@@ -45,12 +45,3 @@ StoreID adalah aplikasi yang dirancang untuk memudahkan pengguna dalam mencari d
 
  
  
-
-## 🤖 Author
-
-- **Inas Latifah** - FE 17 ALTA
-  - [Github](https://github.com/inaslathifah)
-- **Bachtiar Putera Alamsyah** - FE 17 ALTA
-  - [Github](https://github.com/BachtiaraPutera10)
-- **Irsan Jamaludin** - FE 17 ALTA
-  - [Github](https://github.com/IrsanJam)
