@@ -4,6 +4,11 @@ import NumberFormatter from "../NumberFormatter";
 
 const CardHistoryOrder: FC<typeHistoryOrder> = (props: typeHistoryOrder) => {
   const { price, nama_lengkap, description, stock, brand, image, hapus, status, check, paymentStatus, type, datePayment } = props;
+  const dateObject = new Date(datePayment);
+  const day = dateObject.getUTCDate();
+  const month = dateObject.getUTCMonth() + 1;
+  const year = dateObject.getUTCFullYear();
+  const formattedDate = `${day}-${month < 10 ? "0" + month : month}-${year}`;
 
   return (
     <>
@@ -109,7 +114,7 @@ const CardHistoryOrder: FC<typeHistoryOrder> = (props: typeHistoryOrder) => {
             </div>
             <div className="line bg-[#E6E6E6] p-[1.6px]"></div>
             <div id="orderDate" className="flex justify-between w-full gap-5 p-3 md:text-base text-xs">
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center items-center gap-2">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M12.3491 6V12L16.3491 14M22.3491 12C22.3491 17.5228 17.872 22 12.3491 22C6.82627 22 2.34912 17.5228 2.34912 12C2.34912 6.47715 6.82627 2 12.3491 2C17.872 2 22.3491 6.47715 22.3491 12Z"
@@ -119,7 +124,7 @@ const CardHistoryOrder: FC<typeHistoryOrder> = (props: typeHistoryOrder) => {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <p>{datePayment.toLocaleDateString()}</p>
+                <p>{formattedDate}</p>
               </div>
 
               {check && status !== "Selesai" && (
