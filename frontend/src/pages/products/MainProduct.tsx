@@ -334,7 +334,7 @@ const MainProduct = () => {
                   />
                 </svg>
                 <div className="md:w-5 md:h-5 w-2 h-2 p-2 md:text-base text-xs m-auto absolute top-0 right-0 text-center flex justify-center items-center bg-red-500 rounded-full  text-white font-semibold">
-                  <span className="md:pb-1">{totalData.length}</span>
+                  <span className="md:pb-[0.25vh]">{totalData.length}</span>
                 </div>
               </div>
             ) : (
