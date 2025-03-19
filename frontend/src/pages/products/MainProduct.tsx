@@ -26,10 +26,6 @@ const MainProduct = () => {
   const [showHamMenu, setShowHam] = useState(false);
   const [hidden, setHidden] = useState(false);
 
-  const scrollToTop = () => {
-    nextPageBtnRef.current.scrollIntoView({ behavior: "smooth" });
-  };
-
 
   const handleCategory = (category: any) => {
     setCategory(category);

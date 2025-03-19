@@ -1,6 +1,5 @@
 import Swal, { SweetAlertIcon } from "sweetalert2";
 import Cookies from "js-cookie";
-import { useRedirect } from "../hooks/useNavigate";
 
 export const isEmailValid = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.(com)$/i;

@@ -1,5 +1,4 @@
 import { FC, useState } from "react";
-import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
