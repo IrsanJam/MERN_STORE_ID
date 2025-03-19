@@ -9,6 +9,8 @@ import { infoAlertFC } from "../../utils/functions";
 import { useRef } from "react";
 import Swal from "sweetalert2";
 import useCartRun from "../../hooks/useCartRun";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function Cart() {
   const navigate = useNavigate();
@@ -148,10 +150,7 @@ function Cart() {
       if (checkedItems.has(productId)) {
         removeFromFinalOrder(productId);
       }
-      if (cartItems.length === 1) {
-        window.location.reload();
-      }
-      console.log(cartItems);
+      
     } catch (error) {
       console.error("Error deleting item:", error);
     }
@@ -262,7 +261,38 @@ function Cart() {
       </div>
       <section className="py-[5rem] w-full mx-auto lg:flex-1 px-3 md:px-[38px]  rounded-md max-w-none lg:max-w-[1404px] mb-10 ">
         {isLoading ? (
-          <h1>Loading</h1>
+          <div className="px-3 md:px-24 pt-7">
+            <Skeleton height={30} width={200} className="mb-4" />
+            <section className="py-20 w-full mx-auto lg:flex-1 px-3 md:px-10 rounded-md max-w-none lg:max-w-[1404px]">
+              <div className="text-center">
+                <Skeleton height={40} width={250} />
+              </div>
+              <div className="flex gap-7 w-full mt-10 flex-wrap lg:flex-nowrap">
+                <div className="md:w-full w-[100vw] min-w-0 xl:min-w-[715px] space-y-6">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="grid h-[188px] md:px-6 md:py-5 px-2 py-2 bg-white rounded-2xl shadow-md items-center"
+                    >
+                      <Skeleton
+                        width={124}
+                        height={124}
+                        className="rounded-lg"
+                      />
+                      <div className="ml-4 flex-1">
+                        <Skeleton height={20} width={150} className="mb-2" />
+                        <Skeleton height={24} width={200} className="mb-2" />
+                        <Skeleton height={16} width={100} />
+                      </div>
+                      <div className="ml-auto">
+                        <Skeleton height={30} width={80} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </div>
         ) : (
           <>
             {cartItems.length > 0 ? (

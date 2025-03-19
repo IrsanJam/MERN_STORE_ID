@@ -62,13 +62,14 @@ const MainProduct = () => {
   };
 
   const backRefresh = () => {
-    window.location.reload();
     navigate("/");
   };
 
   useEffect(() => {
     call();
   }, []);
+
+  console.log(isLoading)
 
   return (
     <>
@@ -263,7 +264,7 @@ const MainProduct = () => {
           } justify-center items-center`}
         >
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 h-full w-[78%] md:grid-cols-4 gap-4">
               {[...Array(8)].map((_, index) => (
                 <Skeleton key={index} height={250} width="100%" />
               ))}

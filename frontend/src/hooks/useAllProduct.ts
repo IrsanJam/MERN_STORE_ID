@@ -10,9 +10,11 @@ interface ProductQueryParams {
 
 export const useMainRun = (filters: ProductQueryParams = {}) => {
   const queryKey: [string, ProductQueryParams?] = ["all-product", filters];
-  return useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey,
     queryFn: getAllProduct,
     staleTime: 1000 * 60 * 5,
   });
+
+  return { data, isLoading, error };
 };

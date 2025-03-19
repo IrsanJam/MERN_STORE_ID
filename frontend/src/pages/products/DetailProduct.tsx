@@ -9,6 +9,8 @@ import Footer from "../../components/Footer";
 import { infoAlertFC } from "../../utils/functions";
 import { useDetailProductRun } from "../../hooks/useDetailProduct";
 import useCartRun from "../../hooks/useCartRun";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const DetailProduct: FC = () => {
   const username = Cookies.get("username");
@@ -16,7 +18,7 @@ const DetailProduct: FC = () => {
   const location = useLocation();
   const [number, setNumber] = useState(1);
   const id = location.state.id;
-  const {data} = useDetailProductRun(id)
+  const {data, isLoading} = useDetailProductRun(id)
   const {addCartHandle} = useCartRun()
 
 
@@ -103,41 +105,55 @@ const DetailProduct: FC = () => {
             id="content-container"
             className="content flex flex-col md:flex-row justify-center items-center lg:p-10 mb-20 mt-40  lg:px-10 shadow-md bg-white  border-[0.5px] border-slate-200 border-opacity-15 rounded-md gap-8 font-Poppins w-10/12"
           >
-            <div id="image-container" className="flex justify-center h-full md:h-[25rem] items-center border-2 border-slate-100 rounded-md shadow-md w-full md:w-1/2 overflow-hidden">
-              <img id="product-image" src={`${data?.image}`} className="w-[80%] h-full  rounded-md" />
-            </div>
-            <div id="details-container" className="flex flex-col items-start p-5 lg:p-8 md:py-5 justify-start md:h-[25rem] w-full md:w-1/2 gap-5">
-              <span id="product-model" className="md:text-3xl text-lg font-bold text-slate-400">
-                {data?.type}
-              </span>
+             <div id="image-container" className="flex justify-center h-full md:h-[25rem] items-center border-2 border-slate-100 rounded-md shadow-md w-full md:w-1/2 overflow-hidden">
+            {isLoading ? (
+              <Skeleton height="100%" width="80%" />
+            ) : (
+              <img id="product-image" src={data?.image} className="w-[80%] h-full rounded-md" />
+            )}
+          </div>
+          <div id="details-container" className="flex flex-col items-start p-5 lg:p-8 md:py-5 justify-start md:h-[25rem] w-full md:w-1/2 gap-5">
+            <span id="product-model" className="md:text-3xl text-lg font-bold text-slate-400">
+              {isLoading ? <Skeleton width={200} /> : data?.type}
+            </span>
+            {isLoading ? (
+              <Skeleton width={150} height={30} />
+            ) : (
               <NumberFormatter value={data ? data?.price : ""} />
-              <span id="product-info" className="md:text-xl text-sm font-semibold text-slate-500">
-                Ram {data?.ram} | Storage {data?.storage}
-              </span>
-              <span id="product-description" className="md:text-sm text-xs font-sans">
-                {data?.description} with processor
-                <span id="processor" className="font-semibold">
-                  {data?.processor}
-                </span>
-              </span>
+            )}
+            <span id="product-info" className="md:text-xl text-sm font-semibold text-slate-500">
+              {isLoading ? <Skeleton width={180} /> : `Ram ${data?.ram} | Storage ${data?.storage}`}
+            </span>
+            <span id="product-description" className="md:text-sm text-xs font-sans">
+              {isLoading ? (
+                <Skeleton width={250} count={2} />
+              ) : (
+                <>
+                  {data?.description} with processor{" "}
+                  <span id="processor" className="font-semibold">{data?.processor}</span>
+                </>
+              )}
+            </span>
               <div id="separator" className="p-[0.5px] bg-slate-400 w-1/2 "></div>
+              {isLoading ? (
+              <Skeleton width={250} height={40} />
+            ) : (
               <div id="quantity-controls" className="flex gap-5">
-                <div id="quantity-selector" className="flex justify-center items-center p-3  bg-slate-400 md:p-3 gap-8 rounded-md text-white">
+                <div id="quantity-selector" className="flex justify-center items-center p-3 bg-slate-400 md:p-3 gap-8 rounded-md text-white">
                   <span className="font-bold text-slate-50 text-xs lg:text-base cursor-pointer" onClick={() => setNumber((prev) => Math.max(prev - 1, 1))}>
                     -
                   </span>
-                  <span id="quantity-display" className="font-bold text-slate-50 text-xs lg:text-base">
-                    {number}
-                  </span>
+                  <span id="quantity-display" className="font-bold text-slate-50 text-xs lg:text-base">{number}</span>
                   <span className="font-bold text-slate-50 text-xs lg:text-base cursor-pointer" onClick={addValue}>
                     +
                   </span>
                 </div>
 
-                <button id="add-to-cart" onClick={clickProduct} className="lg:px-16 px-5 text-xs lg:text-base py-2 rounded-lg bg-[#0396C7] text-white w-f">
+                <button id="add-to-cart" onClick={clickProduct} className="lg:px-16 px-5 text-xs lg:text-base py-2 rounded-lg bg-[#0396C7] text-white w-full">
                   Masukan Keranjang
                 </button>
               </div>
+            )}
             </div>
           </div>
         </div>

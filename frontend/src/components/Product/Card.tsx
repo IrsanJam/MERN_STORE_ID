@@ -19,9 +19,6 @@ const Card: FC<productDataType> = (props: productDataType) => {
     const updateData = { ...data, totalPrice, quantity: 1 };
     if (username) {
       addCartHandle.mutate({ id, product: updateData });
-      setTimeout(() => {
-        window.location.reload();
-      }, 30);
     } else {
       Swal.fire({
         title: "Konfirmasi",

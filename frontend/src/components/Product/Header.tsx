@@ -56,7 +56,6 @@ const Navbar: FC = () => {
 
   const backRewind = () => {
     navigate('/')
-    window.location.reload()
   }
 
   return (
