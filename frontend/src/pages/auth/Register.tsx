@@ -1,26 +1,19 @@
 import bgCoverUser from "../../img/Rectangle 2775.png";
-import { FC, FormEvent, useState } from "react";
-import { registerType } from "../../utils/auth/type";
-import axios from "axios";
+import { FC, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useRegisterStore } from "../../feature/useRegisterStore";
+import { useAuthRun } from "../../hooks/useAuthRun";
 
 const Register: FC = () => {
   const navigate = useNavigate();
-  const [registerState, setRegisterState] = useState<registerType>({
-    full_name: "",
-    username: "",
-    password: "",
-    showPassword: false,
-    gender: "",
-    email: "",
-    no_handphone: "",
-  });
+  const {registerData,setRegisterData} = useRegisterStore()
+  const {registerRun} = useAuthRun()
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.(com)$/i;
-    if (!emailRegex.test(registerState.email)) {
+    if (!emailRegex.test(registerData.email)) {
       Swal.fire({
         title: "Warning",
         text: "Format email tidak valid",
@@ -31,49 +24,7 @@ const Register: FC = () => {
       });
       return;
     }
-    try {
-      const response = await axios.post("https://mern-storeidku.vercel.app/register", {
-        full_name: registerState.full_name,
-        username: registerState.username,
-        password: registerState.password,
-        gender: registerState.gender,
-        email: registerState.email,
-        no_handphone: registerState.no_handphone,
-      });
-      if (response) {
-        Swal.fire({
-          title: "Confirmation",
-          text: `${registerState.username} Anda Berhasil Registrasi`,
-          icon: "success",
-          confirmButtonText: "OK",
-          confirmButtonColor: "rgb(3 150 199)",
-        }).then((res: any) => {
-          if (res.isConfirmed) {
-            navigate("/login");
-          }
-        });
-      }
-    } catch (error: any) {
-      if (error.message === "Network Error") {
-        Swal.fire({
-          title: "Warning",
-          text: "Tidak terkoneksi ke database",
-          icon: "error",
-          showCancelButton: true,
-          confirmButtonText: "OK",
-          confirmButtonColor: "rgb(255 10 10)",
-        });
-      } else if (error.response.data.message) {
-        Swal.fire({
-          title: "Warning",
-          text: "Email sudah terdaftar",
-          icon: "error",
-          showCancelButton: true,
-          confirmButtonText: "OK",
-          confirmButtonColor: "rgb(255 10 10)",
-        });
-      }
-    }
+    registerRun.mutate(registerData)
   };
   return (
     <>
@@ -104,8 +55,8 @@ const Register: FC = () => {
                       Nama Lengkap <span className="text-red-500">*</span>
                     </span>
                     <input
-                      value={registerState.full_name}
-                      onChange={(e) => setRegisterState((prev) => ({ ...prev, full_name: e.target.value }))}
+                      value={registerData.full_name}
+                      onChange={(e) => setRegisterData("full_name", e.target.value)}
                       maxLength={32}
                       required
                       type="text"
@@ -118,8 +69,8 @@ const Register: FC = () => {
                           Username <span className="text-red-500">*</span>
                         </span>
                         <input
-                          value={registerState.username}
-                          onChange={(e) => setRegisterState((prev) => ({ ...prev, username: e.target.value }))}
+                          value={registerData.username}
+                          onChange={(e) => setRegisterData("username", e.target.value)}
                           maxLength={15}
                           required
                           type="text"
@@ -132,17 +83,17 @@ const Register: FC = () => {
                           Password <span className="text-red-500">*</span>
                         </span>
                         <input
-                          value={registerState.password}
-                          onChange={(e) => setRegisterState((prev) => ({ ...prev, password: e.target.value }))}
+                          value={registerData.password}
+                          onChange={(e) => setRegisterData("password", e.target.value)}
                           required
-                          type={registerState.showPassword ? "text" : "password"}
+                          type={registerData.showPassword ? "text" : "password"}
                           className="w-full  px-[0.4rem]  py-[0.3rem] border-2 border-[#CED4DA] rounded-md"
                           id="password-input"
                         />
                         <div className="flex justify-center items-center w-11/12 md:w-9/12 mt-3 ">
                           <input
-                            onChange={() => setRegisterState((prev) => ({ ...prev, showPassword: !prev.showPassword }))}
-                            checked={registerState.showPassword}
+                          onChange={() => setRegisterData("showPassword", !registerData.showPassword)}
+                          checked={registerData.showPassword}
                             type="checkbox"
                             name="checkbox"
                             id="checkbox"
@@ -161,13 +112,13 @@ const Register: FC = () => {
                         </span>
                         <div className="flex gap-5">
                           <div className="div">
-                            <input checked={registerState.gender === "laki-laki"} onChange={() => setRegisterState((prev) => ({ ...prev, gender: "laki-laki" }))} required type="radio" name="jenis-kelamin" id="laki-laki" />
+                            <input checked={registerData.gender === "laki-laki"}  onChange={() => setRegisterData("gender", "laki-laki")} required type="radio" name="jenis-kelamin" id="laki-laki" />
                             <label htmlFor="laki-laki" className="text-xs md:text-sm ml-1">
                               Laki laki
                             </label>
                           </div>
                           <div className="div">
-                            <input checked={registerState.gender === "perempuan"} onChange={() => setRegisterState((prev) => ({ ...prev, gender: "perempuan" }))} required type="radio" name="jenis-kelamin" id="perempuan" />
+                            <input checked={registerData.gender === "perempuan"}  onChange={() => setRegisterData("gender", "perempuan")}required type="radio" name="jenis-kelamin" id="perempuan" />
                             <label htmlFor="perempuan" className="text-xs md:text-sm ml-1">
                               Perempuan
                             </label>
@@ -181,12 +132,12 @@ const Register: FC = () => {
                     <span id="email-label">
                       Email <span className="text-red-500">*</span>
                     </span>
-                    <input onChange={(e) => setRegisterState((prev) => ({ ...prev, email: e.target.value }))} type="email" className="w-full px-[0.4rem]  py-[0.3rem]  border-2 border-[#CED4DA] rounded-md" id="email-input" />
+                    <input  onChange={(e) => setRegisterData("email", e.target.value)} type="email" className="w-full px-[0.4rem]  py-[0.3rem]  border-2 border-[#CED4DA] rounded-md" id="email-input" />
                     <span className="mt-2" id="nomor-hp-label">
                       No Handphone <span className="text-red-500">*</span>
                     </span>
                     <input
-                      onChange={(e) => setRegisterState((prev) => ({ ...prev, no_handphone: e.target.value }))}
+                   onChange={(e) => setRegisterData("no_handphone", e.target.value)}
                       type="tel"
                       pattern="[0-9]*"
                       maxLength={12}
@@ -194,7 +145,7 @@ const Register: FC = () => {
                       id="nomor-hp-input"
                     />
 
-                    {registerState.full_name === "" && (
+                    {registerData.full_name === "" && (
                       <span id="login-link" className="underline p-2 text-[#0396C7] cursor-pointer " onClick={() => navigate("/login")}>
                         Saya sudah punya akun
                       </span>

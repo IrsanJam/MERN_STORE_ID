@@ -54,6 +54,11 @@ const Navbar: FC = () => {
     call();
   }, []);
 
+  const backRewind = () => {
+    navigate('/')
+    window.location.reload()
+  }
+
   return (
     <div className="flex justify-between  fixed z-10 w-screen items-center px-5 md:px-20 py-2 md:py-0 bg-white shadow-sm h-[10vh] md:h-[20vh]">
       {username !== "admin" ? (
@@ -67,7 +72,7 @@ const Navbar: FC = () => {
       <div className="flex items-center gap-2 md:gap-10">
         <div className="items-center justify-end gap-5 flex">
           {username !== "admin" && (
-            <p className="font-poppins font-normal text-lg hidden lg:block font-Poppins text-[#828282] cursor-pointer" onClick={() => navigate("/")}>
+            <p className="font-poppins font-normal text-lg hidden lg:block font-Poppins text-[#828282] cursor-pointer" onClick={backRewind}>
               Product
             </p>
           )}

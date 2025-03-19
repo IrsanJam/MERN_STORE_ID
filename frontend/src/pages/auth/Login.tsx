@@ -1,117 +1,27 @@
-import axios from "axios";
-import Swal from "sweetalert2";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 import { FC, FormEvent } from "react";
-import { LoginState } from "../../utils/auth/type";
-import { useState } from "react";
 import { infoAlertFC, isEmailValid } from "../../utils/functions";
+import { useLoginStore } from "../../feature/useLoginStore";
+import { useAuthRun } from "../../hooks/useAuthRun";
+import { useRedirect } from "../../hooks/useNavigate";
 
 const Login: FC = () => {
-  const navigate = useNavigate();
-  const [loginState, setLoginState] = useState<LoginState>({
-    email: "",
-    password: "",
-    passwordVisible: false,
-  });
-  const toRegister = (): void => {
-    navigate("/register");
-  };
+  const redirect = useRedirect()
+  const {email, password, passwordVisible, setEmail, setPassword,togglePasswordVisible} = useLoginStore()
+  const {loginRun} = useAuthRun()
+ 
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    if (!isEmailValid(loginState.email)) {
+    if (!isEmailValid(email)) {
       infoAlertFC("Warning", "Format email tidak valid", "error");
       return;
     }
-    if (loginState.email === "admin@gmail.com" && loginState.password === "1") {
-      navigate("/list-users");
+    if (email === "admin@gmail.com" && password === "1") {
+      redirect("/list-users");
       Cookies.set("username", "admin");
     } else {
-      try {
-        const response = await axios.post("https://mern-storeidku.vercel.app/login", {
-          email: loginState.email,
-          password: loginState.password,
-        });
-        if (response) {
-          const token = response.data.accessToken;
-          Cookies.set("authToken", token);
-          Swal.fire({
-            title: "Confirmation",
-            text: `Hello Selamat Datang`,
-            icon: "success",
-            confirmButtonText: "OK",
-            confirmButtonColor: "rgb(3 150 199)",
-          }).then((res) => {
-            if (res.isConfirmed) {
-              const cekData = async () => {
-                try {
-                  const response = await axios.get("https://mern-storeidku.vercel.app/alluser");
-                  const userData = response.data;
-                  const findOut = userData.find((user: { [key: string]: string }) => user.email === loginState.email);
-                  if (findOut) {
-                    const user = findOut.username;
-                    const image = findOut.image;
-                    Cookies.set("gambar", image);
-                    Cookies.set("username", user);
-                    navigate("/");
-                  } else {
-                    handleLoginError(!response);
-                  }
-                } catch (error) {
-                  handleLoginError(error);
-                }
-              };
-              cekData();
-            }
-          });
-        } else {
-          handleLoginError(!response);
-        }
-      } catch (error: any) {
-        handleLoginError(error);
-      }
-    }
-  };
-
-  const handleLoginError = (error: any) => {
-    if (error.message === "Network Error") {
-      Swal.fire({
-        title: "Warning",
-        text: "Tidak terkoneksi ke database",
-        icon: "error",
-        showCancelButton: true,
-        confirmButtonText: "OK",
-        confirmButtonColor: "rgb(255 10 10)",
-      });
-    } else if (error.response.status === 404) {
-      Swal.fire({
-        title: "Warning",
-        text: "Anda Belum Punya akun, Anda harus registrasi dulu",
-        icon: "error",
-        showCancelButton: true,
-        confirmButtonText: "OK",
-        confirmButtonColor: "rgb(255 10 10)",
-      }).then((res: any) => {
-        if (res.isConfirmed) {
-          navigate("/register");
-        }
-      });
-    } else if (error.response.status === 400) {
-      Swal.fire({
-        title: "Confirmation",
-        text: "Password anda Salah",
-        icon: "error",
-        showCancelButton: true,
-        confirmButtonText: "OK",
-        confirmButtonColor: "rgb(255 10 10)",
-      }).then(() => {
-        setLoginState({
-          email: "",
-          password: "",
-          passwordVisible: false,
-        });
-      });
+      loginRun.mutate({email,password})
     }
   };
 
@@ -122,7 +32,7 @@ const Login: FC = () => {
           <span className="text-lg lg:text-3xl font-bold text-[#0396C7]" id="logo">
             StoreID
           </span>
-          <span onClick={toRegister} className="underline text-xs lg:text-lg font-bold text-[rgb(130,130,130)] cursor-pointer" id="sign-up-link">
+          <span onClick={() => redirect('/register')} className="underline text-xs lg:text-lg font-bold text-[rgb(130,130,130)] cursor-pointer" id="sign-up-link">
             Sign Up
           </span>
         </div>
@@ -133,18 +43,17 @@ const Login: FC = () => {
               Sign In
             </span>
             <input
-              value={loginState.email}
-              onChange={(e) => setLoginState((prev) => ({ ...prev, email: e.target.value }))}
-              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}              type="email"
               placeholder="E-mail"
               className="px-5 py-3 w-10/12 lg:w-1/3 rounded-3xl bg-white text-gray-400 border-2"
               required
               id="email-input"
             />
             <input
-              value={loginState.password}
-              onChange={(e) => setLoginState((prev) => ({ ...prev, password: e.target.value }))}
-              type={loginState.passwordVisible ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type={passwordVisible ? "text" : "password"}
               placeholder="Password"
               className="px-5 py-3 w-10/12 lg:w-1/3 rounded-3xl bg-white text-gray-400 border-2"
               required
@@ -155,8 +64,8 @@ const Login: FC = () => {
               <div className="flex justify-between items-center" id="password-checkbox">
                 <span className="text-[#000000]">
                   <input
-                    onChange={() => setLoginState((prev) => ({ ...prev, passwordVisible: !prev.passwordVisible }))}
-                    checked={loginState.passwordVisible}
+                    onChange={() => togglePasswordVisible()}
+                    checked={passwordVisible}
                     type="checkbox"
                     name="checkbox"
                     id="checkbox"
@@ -170,7 +79,7 @@ const Login: FC = () => {
               </button>
               <span className="text-black flex justify-center -mt-5" id="no-account-message">
                 Belum punya akun?{" "}
-                <span onClick={toRegister} className="cursor-pointer underline ml-3 text-[#041DFF]" id="register-link">
+                <span onClick={() => redirect('/register')} className="cursor-pointer underline ml-3 text-[#041DFF]" id="register-link">
                   Daftar
                 </span>
               </span>

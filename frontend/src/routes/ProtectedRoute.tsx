@@ -3,11 +3,12 @@ import { ReactNode } from "react";
 import Cookies from "js-cookie";
 
 const ProtectedRoute = ({ children }: { children?: ReactNode }) => {
-  const token = Cookies.get("username");
+  const token = Cookies.get("authToken");
   const { pathname } = useLocation();
 
   const authProtected = ["/404"];
   const protectedByToken = [
+    "/",
     "/profilerenter",
     "/create-product",
     "/detail-product/:id",

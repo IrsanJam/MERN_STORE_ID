@@ -1,7 +1,7 @@
 export interface LoginState {
   email: string;
   password: string;
-  passwordVisible: boolean;
+  passwordVisible?: boolean;
 }
 
 export interface registerType {

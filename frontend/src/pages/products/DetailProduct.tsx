@@ -1,5 +1,4 @@
-import { FC, useEffect, useState } from "react";
-import { typeLaptopDetail } from "../../utils/products/type";
+import { FC, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -9,35 +8,18 @@ import NumberFormatter from "../../components/NumberFormatter";
 import Header from "../../components/Product/Header";
 import Footer from "../../components/Footer";
 import { infoAlertFC } from "../../utils/functions";
+import { useDetailProductRun } from "../../hooks/useDetailProduct";
+import useCartRun from "../../hooks/useCartRun";
 
 const DetailProduct: FC = () => {
   const username = Cookies.get("username");
   const navigate = useNavigate();
   const location = useLocation();
-  const [detail, setDetail] = useState<typeLaptopDetail>();
   const [number, setNumber] = useState(1);
   const id = location.state.id;
-  const authToken = Cookies.get("authToken");
+  const {data} = useDetailProductRun(id)
+  const {addCartHandle} = useCartRun()
 
-  const showDetail = async () => {
-    try {
-      const response = await axios.get(`https://mern-storeidku.vercel.app/product/${id}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      const filteredData = response.data;
-      setDetail(filteredData);
-    } catch (error) {
-      Swal.fire({
-        title: "Gagal",
-        text: `Tidak ada data`,
-        icon: "error",
-        confirmButtonText: "OK",
-        confirmButtonColor: "rgb(3 150 199)",
-      });
-    }
-  };
 
   const addCart = async (data: any) => {
     try {
@@ -47,23 +29,7 @@ const DetailProduct: FC = () => {
 
       if (username) {
         try {
-          await axios.post(`https://mern-storeidku.vercel.app/cart?productId=${id}`, updateData, {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
-          });
-          Swal.fire({
-            title: "Berhasil",
-            text: `Barang ditambahkan ke keranjang`,
-            icon: "success",
-            confirmButtonText: "OK",
-            confirmButtonColor: "rgb(3 150 199)",
-          }).then((res) => {
-            if (res.isConfirmed) {
-              navigate("/cart");
-            }
-          });
+         addCartHandle.mutate({id, product:updateData})
         } catch (error: any) {
           infoAlertFC("Error", "Gagal untuk menambahkan ke Keranjang", "error");
         }
@@ -89,7 +55,7 @@ const DetailProduct: FC = () => {
 
   const clickProduct = () => {
     if (username) {
-      addCart(detail);
+      addCart(data);
     } else {
       Swal.fire({
         title: "Konfirmasi",
@@ -110,24 +76,24 @@ const DetailProduct: FC = () => {
   const addValue = () => {
     setNumber((prev) => prev + 1);
     setTimeout(() => {
-      if (number === detail?.stock) {
+      if (number === data?.stock) {
         Swal.fire({
           title: "Konfirmasi",
-          text: `Stock hanya tersisa ${detail.stock}`,
+          text: `Stock hanya tersisa ${data?.stock}`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonText: "OK",
           cancelButtonText: "No",
           confirmButtonColor: "rgb(255 15 19)",
         });
-        setNumber(detail.stock);
+        setNumber(data?.stock);
       }
     }, 0);
   };
 
-  useEffect(() => {
-    showDetail();
-  }, []);
+  // useEffect(() => {
+  //   showDetail();
+  // }, []);
 
   return (
     <>
@@ -139,20 +105,20 @@ const DetailProduct: FC = () => {
             className="content flex flex-col md:flex-row justify-center items-center lg:p-10 mb-20 mt-40  lg:px-10 shadow-md bg-white  border-[0.5px] border-slate-200 border-opacity-15 rounded-md gap-8 font-Poppins w-10/12"
           >
             <div id="image-container" className="flex justify-center h-full md:h-[25rem] items-center border-2 border-slate-100 rounded-md shadow-md w-full md:w-1/2 overflow-hidden">
-              <img id="product-image" src={`${detail?.image}`} className="w-[80%] h-full  rounded-md" />
+              <img id="product-image" src={`${data?.image}`} className="w-[80%] h-full  rounded-md" />
             </div>
             <div id="details-container" className="flex flex-col items-start p-5 lg:p-8 md:py-5 justify-start md:h-[25rem] w-full md:w-1/2 gap-5">
               <span id="product-model" className="md:text-3xl text-lg font-bold text-slate-400">
-                {detail?.type}
+                {data?.type}
               </span>
-              <NumberFormatter value={detail ? detail?.price : ""} />
+              <NumberFormatter value={data ? data?.price : ""} />
               <span id="product-info" className="md:text-xl text-sm font-semibold text-slate-500">
-                Ram {detail?.ram} | Storage {detail?.storage}
+                Ram {data?.ram} | Storage {data?.storage}
               </span>
               <span id="product-description" className="md:text-sm text-xs font-sans">
-                {detail?.description} with processor
+                {data?.description} with processor
                 <span id="processor" className="font-semibold">
-                  {detail?.processor}
+                  {data?.processor}
                 </span>
               </span>
               <div id="separator" className="p-[0.5px] bg-slate-400 w-1/2 "></div>

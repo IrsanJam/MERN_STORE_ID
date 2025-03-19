@@ -111,13 +111,49 @@ router.delete("/product/:id", verifyToken, async (req, res) => {
 
 router.get("/product-all", verifyToken, async (req, res) => {
   const userId = req.user.id;
+  let { category, page = 1, limit = 10, search } = req.query; // Tambah search query
+
   try {
-    const result = await productModel.find({ storeId: { $ne: userId }, stock: { $gt: 0 } });
-    return res.status(200).json(result);
+    let query = { storeId: { $ne: userId }, stock: { $gt: 0 } };
+
+    // Filter berdasarkan kategori
+    if (category) {
+      if (category === "low-end") {
+        query.price = { $lt: 5000000 };
+      } else if (category === "mid-range") {
+        query.price = { $gte: 5000000, $lte: 15000000 };
+      } else if (category === "high-end") {
+        query.price = { $gt: 15000000 };
+      }
+    }
+
+    // Filter berdasarkan pencarian nama produk (case-insensitive)
+    if (search && search !== "0") {
+      query.brand = { $regex: search, $options: "i" };
+    }
+
+    // Hitung total data
+    const totalItems = await productModel.countDocuments(query);
+
+    // Ambil data dengan pagination
+    const result = await productModel
+      .find(query)
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    return res.status(200).json({
+      data: result,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: parseInt(page),
+    });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 });
+
+
+
 
 router.delete("/product-all", async (req, res) => {
   try {
